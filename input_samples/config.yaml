@@ -1,0 +1,6 @@
+output: R4JExportText.docx
+template: TechRequirementTemplate.docx
+r4j:
+  server: odart.arrisi.com
+  projkey: TRBOOT
+  jqlfilter: filter
