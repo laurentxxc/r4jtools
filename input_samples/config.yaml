@@ -1,6 +1,11 @@
-output: R4JExportText.docx
+# Path name location of the word document to be created
+output: R4JExportRequirement.docx
+# Path name location of the word document template
 template: TechRequirementTemplate.docx
 r4j:
+  # R4J server name
   server: odart.arrisi.com
+  # R4J requirement project
   projkey: TRBOOT
+  # Additional jql filter
   jqlfilter: filter
