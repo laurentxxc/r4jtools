@@ -22,17 +22,17 @@ Python script `r4jtools.py` allows to export [R4J](https://marketplace.atlassian
 * R4J Server address
 * R4J project key
 
-A configuration template example is available in [config.yaml](input_samples/config_yaml)
+A configuration template example is available in [config.yaml](input_samples/config.yaml)
 
 ## Word template
-Word template allow to contain generic information about the requirement projets that generally are not described in the requirement database. Such document also define presentation style and look for external publication.
+Word template allow to contain generic informations about a specific project that generally are not described in the requirement database. Such document also define presentation style and look for external publication.
 When exporting requirements, `r4jtools.py` will first instanciate the word template in a new document with appropriate name
 Requirements from the configured project will be then exported at a specific insertion point defined by text `<Requirements>` with format style name `Insertion Point`.
-Requirements will be exported, grouped and ordered following R4J project database using following word format styles:
-* `Heading 2`..`Heading n`: Heading style used to format R4J folder name repesenting category of grouped
-* `Requirement_list`: Table style used to format table presentating requirement information details
+Requirements will be exported, grouped and ordered following R4J project database folder structure and using following word format styles:
+* `Heading 2`..`Heading n`: Heading style used to format R4J folder name repesenting a dedicated set of requirements
+* `Requirement_list`: Table style used to format all details of a each requirement in one dedicated table
 * `Requirement Title`: Paragraph style used to format requirement title
-* `Requirement`: Paragraph style used to format other requirement information (e.g. description, dependencies)
+* `Requirement`: Paragraph style used to format other requirement informations (e.g. description, dependencies)
 
 A Word template example is available in [TechRequirementTemplate.docx](inputs_amples/TechRequirementTemplate.docx)
 
