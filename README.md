@@ -29,6 +29,7 @@ Word template allow to contain generic informations about a specific project tha
 When exporting requirements, `r4jtools.py` will first instanciate the word template in a new document with appropriate name
 Requirements from the configured project will be then exported at a specific insertion point defined by text `<Requirements>` with format style name `Insertion Point`.
 Requirements will be exported, grouped and ordered following R4J project database folder structure and using following word format styles:
+
 * `Heading 2`..`Heading n`: Heading style used to format R4J folder name repesenting a dedicated set of requirements
 * `Requirement_list`: Table style used to format all details of a each requirement in one dedicated table
 * `Requirement Title`: Paragraph style used to format requirement title
@@ -38,10 +39,11 @@ A Word template example is available in [TechRequirementTemplate.docx](inputs_am
 
 # TODOS
 Following features to be added:
+
 * Addition requirement info
-* * Jira link
-* * Req dependencies
-* * others Jira fields
+    * Jira link
+    * Req dependencies
+    * others Jira fields
 * Particular case for requirement with build field (comment, image or table)
 * Filter req (with jql)
 * Add traceability matrix

@@ -212,7 +212,12 @@ def main():
     # 3 steps:
     # - connect Jira database specified in config
     ## get yaml measurement scenario
-    with open(options.config, 'r') as file:
+    try:
+        file = open(options.config, 'r')
+    except FileNotFoundError:
+        log(f'''File {options.config} not found !!''')
+        exit(-1)
+    else:
         config = yaml.safe_load(file)
     #print(config)
 
