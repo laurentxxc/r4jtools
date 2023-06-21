@@ -1,50 +1,101 @@
 # Purpose
-Python script `r4jtools.py` allows to export [R4J](https://marketplace.atlassian.com/apps/1213064/r4j-requirements-management-for-jira?tab=overview&hosting=cloud) requirements in a word documentation.
 
-# Dependencies
-`r4jtools.py` mainly depends on following:
+Depending final stakeholders, many different documentation styles and contents can be needed from the same R4J requirement project (e.g. internal confluence page requirement review, internal requirement checklist, external docucmention for 3rd party or customer...). R4J Tools provides a generic workflow based on few operations allowing to export R4J requirements and publish them in multiple publishing format.
 
-* [R4J REST 2.0 API](https://easesolutions.atlassian.net/wiki/spaces/REQ4J/pages/1473937542/REST+API+2.0+Reference)
-* [JIRA REST API](https://developer.atlassian.com/server/jira/platform/rest-apis/)
-* [python-docx api](https://python-docx.readthedocs.io/en/latest/)
+Picture below summarizes how R4J document generation workflow can be used to generate a project specific style based Word documentation of R4J requirements.
 
-# Input & Configuration
-`r4jtools.py` requires 2 main inputs:
+![R4J Tools workflow](doc/r4jtools_workflow.svg)
 
-1. Main Configuration file
-2. Word template
+3 following main operations are proposed in the R4J Tools worklfow:
+1. **R4J Export**: This operation consists of extracting R4J requirements from the JIRA database and convert them in YAML form
+2. **Jinja Formatting**: This operation consists of parsing R4J requirement format and created a structured document file based on a defined [Jinja template](https://jinja.palletsprojects.com/en/2.11.x/templates/) (Although usage of [Markdown](https://daringfireball.net/projects/markdown/) Jinja template is descibed here, other template desetination format could be defined/used)
+3. **Document Rendering**: This operation consists of formatting structured documentation format in a final publication format (Althoug usage of Microsoft Word format is described here, other publication format could be used too)
 
-## Main configuration file
-`r4jtools.py`main configuration file is yaml format and must include the following informations:
+A global workflow configuration has to be setup to configure inputs/outputs of each operations. following input/output informations:
+* Inputs
+  * R4J information (including url, project key)
+  * Jinja model to be used
+  * Word reference document file name and location
+* Outputs
+  * YAML output file name and location
+  * StructureText/Markdwon output file name and location
+  * Final Word documentation location 
 
-* Word file output name
-* Word file template used to inject requirement
-* R4J Server address
-* R4J project key
+A configuration file sample is provided in [config.yaml](input_samples/config.yaml).
 
-A configuration template example is available in [config.yaml](input_samples/config.yaml)
+## Usage
+### Installation pre-requisites
+Python scripts used in R4J workflow have dependencies with several python package.
+Prior to used this scripts for the first time, following command can be used to ensure that needed packages are installed:
 
-## Word template
-Word template allow to contain generic informations about a specific project that generally are not described in the requirement database. Such document also define presentation style and look for external publication.
-When exporting requirements, `r4jtools.py` will first instanciate the word template in a new document with appropriate name
-Requirements from the configured project will be then exported at a specific insertion point defined by text `<Requirements>` with format style name `Insertion Point`.
-Requirements will be exported, grouped and ordered following R4J project database folder structure and using following word format styles:
+```shell
+pip install -r requirements.txt
+```
+[Pandoc](https://pandoc.org/installing.html) tools need also to be properly installed.
 
-* `Heading 2`..`Heading n`: Heading style used to format R4J folder name repesenting a dedicated set of requirements
-* `Requirement_list`: Table style used to format all details of a each requirement in one dedicated table
-* `Requirement Title`: Paragraph style used to format requirement title
-* `Requirement`: Paragraph style used to format other requirement informations (e.g. description, dependencies)
+### Project setup
+For each project where a requirement document type has to be generated, a dedicated configuration file as to be created. A copy of [config.yaml](input_samples/config.yaml) can be used and updated accordingly.
+In case multiple configurations are needed (e.g. multiple requirement database for same project, multiple format,...), each configuration file should be named approrprielty.
 
-A Word template example is available in [TechRequirementTemplate.docx](inputs_amples/TechRequirementTemplate.docx)
+### R4J Export
+This operation extracts the requirements and their attributes from a R4J project and converts them in a dedicated YAML formatted file.
+[r4j_export.py](./r4j_export.py) python script is used for this operation.
 
-# TODOS
-Following features to be added:
+```
+usage: r4j_export.py [-h] [-c, --config CONFIG] [-u USER] [-p PASSWORD] [-o OUTPUT]
 
-* Addition requirement info
-    * Jira link
-    * Req dependencies
-    * others Jira fields
-* Particular case for requirement with build field (comment, image or table)
-* Filter req (with jql)
-* Add traceability matrix
-* ...
+programm_description
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -c, --config CONFIG   Configuration file. By default config.yaml file is used
+  -u USER, --user USER  Username to access JIRA. If not provided, it will have to be entered in terminal.
+  -p PASSWORD, --password PASSWORD
+                        Password to access JIRA. If not provided, it will have to be entered in the terminal.
+  -o OUTPUT, --output OUTPUT
+                        Output file name location to store yaml exported content. This will override value define in configuration file
+```
+
+_Dependencies:_
+* json
+* yaml
+* markdownify
+
+### Jinja Formatting
+This operation parses YAML formated requirement informations from previous operation and reorganizes them in a structured text file format based on specific Jinja template.
+[r4j_format.py](./r4j_format.py) python script is used for this operation.
+
+```
+usage: r4j_format.py [-h] [-c CONFIG]
+
+Format R4J YAML requirements in a structure text format accroding specific Jinja template
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -c CONFIG, --config CONFIG
+                        Configuration file
+```
+
+_Dependencies:_
+* yaml
+* jinja2
+
+### Document Rendering
+This operation converts structured text file from previous operation in a final rendered documentation (e.g. MS Word) that can be share outside
+[r4j_render.py](./r4j_render.py) python script is used for this operation.
+
+```
+usage: r4j_render.py [-h] [-c CONFIG]
+
+Render a final document from text file structured requirements description and style reference document (i.e. Word styles, front page, page header/footer, ...)
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -c CONFIG, --config CONFIG
+                        Configuration file
+```
+
+_Dependencies:_
+* pandoc
+
+

@@ -1,0 +1,6 @@
+PyYAML
+pandoc
+pandocfilters
+requests
+markdownify
+Jinja2

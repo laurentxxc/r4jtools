@@ -1,0 +1,126 @@
+@startuml "r4jtools_workflow"
+!theme cerulean
+
+file CONFIG <<YAML>> [
+    <b>Overall configuration
+    (see example in input_samples/config.yaml)
+
+    Including:
+    - <color:purple><b>export</b></color>
+        - <color:purple><b>server, projkey</b></color>: jira url, R4J project key
+        - <color:purple><b>yaml_out</b></color>: yaml output location
+    - <color:purple><b>format</b></color>
+        - <color:purple><b>text_model</b></color>: Jinja template location
+        - <color:purple><b>text_out</b></color>: text output location
+        - <color:purple><b>header</b></color>: documentation attributes
+            - <color:purple><b>title, subtitle, abstract, author...</b></color>
+    - <color:purple><b>render</b></color>    
+        - <color:purple><b>doc_out</b></color>: Rendered document location
+        - <color:purple><b>doc_style</b></color>: Word style reference document location
+]
+
+rectangle "R4J Document Generation Workflow" {
+    interface PARAM [
+        <b>Parameters
+    ]
+
+    agent EXPORT [
+        <b>R4J Export
+        <color:blue><i>r4j_export.py
+
+        Dependencies:
+        - requests
+        - json, yaml
+    ]
+    agent FORMAT [
+        <b>Jinja Formatting
+        <color:blue><i>r4j_format.py
+
+        dependencies:
+        - jinja2
+
+    ]
+
+    agent RENDER [
+        <b>Document Rendering
+        <color:blue><i>r4j_render.py
+        
+        dependencies:
+        - pandoc
+
+    ]
+}
+
+
+rectangle "Sourced data" {
+    database R4J <<JIRA>> [
+        <b>R4J Requirements
+
+        <color:purple><b>@export.server
+        <color:purple><b>@export.projkey 
+    ]
+
+    file JINJA <<JINJA>> [
+        <b>jinja2 template used
+        to define how requirement
+        informations should be 
+        layout in the generated doc
+
+        <color:purple><b>@format.text_model
+    ]
+
+    file DOCSTYLE <<DOCX>> [
+        <b>docx reference
+        defining header, footer
+        and styles to be used
+        by pandoc for generating
+        docx output
+
+        <color:purple><b>@render.doc_style
+    ]
+}
+
+rectangle "Generated data" {
+    file R4J_YAML <<YAML>> [
+        <b>Extracted requirements
+
+        <color:purple><b>@export.yaml_out
+    ] 
+
+    file MD_CONTENT <<MARKDOWN>>[
+        <b>Markdwon content
+        Requirements information
+        formated from Jinja template
+
+        <color:purple><b>@format.text_out
+        <color:purple><b>@format.header
+    ]
+
+    file FINAL_DOC <<DOCX>>[
+        <b>Requirement docx
+        Final rendered word
+        document with R4J
+        requirements
+
+        <color:purple><b>@render.doc_out
+    ]
+}
+
+
+CONFIG .. PARAM
+
+R4J --> EXPORT
+PARAM -right[hidden]- EXPORT
+EXPORT -right[hidden]- FORMAT
+FORMAT -right[hidden]- RENDER
+
+
+EXPORT --> R4J_YAML 
+R4J_YAML -up> FORMAT
+JINJA --> FORMAT
+FORMAT --> MD_CONTENT
+MD_CONTENT -up> RENDER
+DOCSTYLE --> RENDER
+RENDER --> FINAL_DOC
+
+@enduml
