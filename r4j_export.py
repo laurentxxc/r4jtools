@@ -5,7 +5,7 @@ import yaml
 import json
 import requests
 import sys
-from markdownify import markdownify as md
+import pandoc
 
 R4J_PATH = '/rest/com.easesolutions.jira.plugins.requirements/2.0'
 # INSERTION_POINT_STYLE = 'Insertion Point'
@@ -55,9 +55,9 @@ class JiraSearch(object):
             with JIRA's REST API. """
         log('Fetching ' + key)
         # we need to expand subtasks and links since that's what we care about here.
-        # response = self.get(f'{JIRA_PATH}/issue/{key}', params={'fields': self.fields})
+        response = self.get(f'{JIRA_PATH}/issue/{key}', params={'fields': self.fields})
         # Line updated for getting renderedFields (like description) in html and convert in md 
-        response = self.get(f'{JIRA_PATH}/issue/{key}', params={'fields': self.fields, 'expand':'renderedFields'})
+        # response = self.get(f'{JIRA_PATH}/issue/{key}', params={'fields': self.fields, 'expand':'renderedFields'})
         response.raise_for_status()
         return response.json()
 
@@ -99,6 +99,9 @@ def parse_args():
     return parser.parse_args()
 
 
+def convertJira2Markdown(jira_text) -> str:
+    return pandoc.write(pandoc.read(jira_text,format='jira'),format='markdown')
+
 def exportR4JRequirements(r4jfolders, search: JiraSearch):
     def recExport(folderJson):
         log(f'Getting req from folder : {folderJson["name"]}')
@@ -109,26 +112,19 @@ def exportR4JRequirements(r4jfolders, search: JiraSearch):
                 reqJson = search.get_requirement(elem['data']['key'])
                 fields = reqJson['fields']
 
-                if MDCONVERT:
-                    # update req description with better Markdown output
-                    description = md(reqJson['renderedFields']['description'])
-                else:
-                    description = fields['description']
+                # update req description with better Markdown output
+                md_description = convertJira2Markdown(fields['description'])
                 
-                # removing leading/trailing newline or space
-                fields['description'] =  description.strip()
-
-                # TODO: could be done for other renderedFields...
+                fields['description'] =  md_description.strip()
         
                 result[elem['data']['key']] = fields
-                # update req description with better Markdown output
                 
                 
             return result
 
         req_section = {}
         req_section['name'] = folderJson['name']
-        req_section['description'] = folderJson['description']
+        req_section['description'] = convertJira2Markdown(folderJson['description'])
         req_section['reqs'] = getReqTable(folderJson['issues'])
         
         req_section['sections'] = {}
@@ -164,8 +160,8 @@ def main():
     auth = (user, password)
     
     # - get requirements from the database
-    jira = JiraSearch("https://%s" % config['r4j']['server'], auth, False)
-    treeReqJson = jira.get_requirements_tree(projkey=config['r4j']['projkey'])
+    jira = JiraSearch("https://%s" % config['export']['server'], auth, False)
+    treeReqJson = jira.get_requirements_tree(projkey=config['export']['projkey'])
 
     #print(treeReqJson)
     #printFolderNames("", treeReqJson)
@@ -192,8 +188,8 @@ def main():
     if options.output is not None:
         outname = options.output
     else:
-        if 'yaml_reqs' in config.keys():
-            outname = config['yaml_reqs']
+        if 'yaml_out' in config['export'].keys():
+            outname = config['export']['yaml_out']
 
     outyaml = open(outname,'w')
     log('--- yaml.dump ---')
