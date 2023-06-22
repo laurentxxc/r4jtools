@@ -23,8 +23,8 @@ A global workflow configuration has to be setup to configure inputs/outputs of e
 
 A configuration file sample is provided in [config.yaml](input_samples/config.yaml).
 
-## Usage
-### Installation pre-requisites
+# Usage
+## Installation pre-requisites
 Python scripts used in R4J workflow have dependencies with several python package.
 Prior to used this scripts for the first time, following command can be used to ensure that needed packages are installed:
 
@@ -33,11 +33,11 @@ pip install -r requirements.txt
 ```
 [Pandoc](https://pandoc.org/installing.html) tools need also to be properly installed.
 
-### Project setup
+## Project setup
 For each project where a requirement document type has to be generated, a dedicated configuration file as to be created. A copy of [config.yaml](input_samples/config.yaml) can be used and updated accordingly.
 In case multiple configurations are needed (e.g. multiple requirement database for same project, multiple format,...), each configuration file should be named approrprielty.
 
-### R4J Export
+## R4J Export
 This operation extracts the requirements and their attributes from a R4J project and converts them in a dedicated YAML formatted file.
 [r4j_export.py](./r4j_export.py) python script is used for this operation.
 
@@ -61,7 +61,7 @@ _Dependencies:_
 * yaml
 * markdownify
 
-### Jinja Formatting
+## Jinja Formatting
 This operation parses YAML formated requirement informations from previous operation and reorganizes them in a structured text file format based on specific Jinja template.
 [r4j_format.py](./r4j_format.py) python script is used for this operation.
 
@@ -80,7 +80,7 @@ _Dependencies:_
 * yaml
 * jinja2
 
-### Document Rendering
+## Document Rendering
 This operation converts structured text file from previous operation in a final rendered documentation (e.g. MS Word) that can be share outside
 [r4j_render.py](./r4j_render.py) python script is used for this operation.
 
@@ -98,4 +98,12 @@ optional arguments:
 _Dependencies:_
 * pandoc
 
+## TODO
+Features not yet avaiable that would be nice to have:
 
+- Filter requirements extracted from project (currently all the requirements are extracted)
+- Configure R4J requirement fields that are exported. Currently only `key`,`summary`,`description` and `updated` fields are exported
+- Handle Graphic/Table attachements. Such assets should be merged properly with the requirement descirption in the generated documentation
+- Allow to specify multiple authors in the config file. Only one single author can be set currently
+- Allow to change format of requirement description exported (currently jira to markdown conversion is done)
+- Allow to aggregate "intro" page in the final doc 
