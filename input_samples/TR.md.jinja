@@ -11,6 +11,8 @@
 {% if header.category -%} category: '{{ header.category}}' {% else -%} category: 'Technical Requirements' {% endif %}
 date: '{{ creation_date }}'
 ...
+{% set r4jorigin = "https://%s/plugins/servlet/com.easesolutions.jira.plugins.requirements/project?detail=%s" % (val.r4jexport.server, val.r4jexport.projkey) %}
+Requirements extracted from R4J database [{{val.r4jexport.projkey}}]({{r4jorigin }}) on {{val.r4jexport.date}}
 
 {# section with table of req only #}
 # List of main requirement sections
@@ -30,7 +32,7 @@ date: '{{ creation_date }}'
 {{ sval.description }}
 
 {% for rkey, rval in sval.reqs.items() -%}
-{{ headmark }}# [**{{ rkey }}**] {{ rval.summary }}
+{{ headmark }}# [{{ rkey }}]({{r4jorigin}}&issueKey={{rkey}}) {{ rval.summary }}
 
 {{rval.description|indent('> ',True, True)}}
 
