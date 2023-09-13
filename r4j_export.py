@@ -6,6 +6,7 @@ import json
 import requests
 import sys
 import pandoc
+from datetime import date
 
 R4J_PATH = '/rest/com.easesolutions.jira.plugins.requirements/2.0'
 # INSERTION_POINT_STYLE = 'Insertion Point'
@@ -166,17 +167,15 @@ def main():
     #print(treeReqJson)
     #printFolderNames("", treeReqJson)
 
-    # - Export requirement in word doc
+    # Collection requirements in a Json table
     jsonReqs = {0: exportR4JRequirements(treeReqJson, jira)}
-    # exportDoc.save(config['output'])
 
-    # requirement presentation idea:
-    # folder has Heading N+1 style (N = folder level)
-    # 1 column table with first line
-    # # Req ID + Name as specific heading style (is it possible to have it in table header)
-    # # description
-    # 
-    #walkFolderReq(0,treeReqJson)
+    # Adding complementary infos for keeping extraction history
+    jsonReqs[0]['r4jexport'] = { 
+        'server': config['export']['server'],
+        'projkey': config['export']['projkey'],
+        'date': date.today().isoformat()
+    }
 
     log('---  Normal print ---')
     print(jsonReqs)
