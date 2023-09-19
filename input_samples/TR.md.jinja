@@ -1,14 +1,14 @@
-{# Input variables: header, creation_date, reqexport -#}
+{# Input variables: header, creation_date, reqexport #}
 ---
 {# Generate yaml header with document property #}
-{%- set key, val = reqexport.items()|first %}
-{%- set req_sections = val.sections -%}
+{% set key, val = reqexport.items()|first %}
+{% set req_sections = val.sections %}
 
-{%- if header.title -%} title: '{{ header.title }}' {% else -%} title: '{{ val.name }}' {% endif %}
-{% if header.subtitle -%} subtitle: '{{ header.subtitle }}' {% else -%} subtitle: 'TR' {% endif %}
-{% if header.author -%} author: '{{ header.author }}' {% endif %}
-{% if header.abstract -%} abstract: '{{ header.abstract }}' {% else -%} abstract: 'This document describes {{ val.name }}' {% endif %}
-{% if header.category -%} category: '{{ header.category}}' {% else -%} category: 'Technical Requirements' {% endif %}
+{%- if header.title %}title: '{{ header.title }}' {% else -%} title: '{{ val.name }}' {% endif +%}
+{% if header.subtitle %}subtitle: '{{ header.subtitle }}' {% else -%} subtitle: 'TR' {% endif +%}
+{% if header.author %}author: '{{ header.author }}' {% endif +%}
+{% if header.abstract %}abstract: '{{ header.abstract }}' {% else %} abstract: 'This document describes {{ val.name }}' {% endif +%}
+{% if header.category %}category: '{{ header.category}}' {% else %} category: 'Technical Requirements' {% endif +%}
 date: '{{ creation_date }}'
 ...
 {% set r4jorigin = "https://%s/plugins/servlet/com.easesolutions.jira.plugins.requirements/project?detail=%s" % (val.r4jexport.server, val.r4jexport.projkey) %}
@@ -17,25 +17,30 @@ Requirements extracted from R4J database [{{val.r4jexport.projkey}}]({{r4jorigin
 {# section with table of req only #}
 # List of main requirement sections
 
-{% for skey, sval in req_sections.items() recursive -%}
-{% for rkey, rval in sval.reqs.items() -%}
+{% for skey, sval in req_sections.items() recursive %}
+{% for rkey, rval in sval.reqs.items() %}
 * [{{ rkey }}] {{ rval.summary }}
-{% endfor -%}
-{{ loop(sval.sections.items()) }}
-{%- endfor -%}
+{% endfor %}
+{{- loop(sval.sections.items()) -}}
+{% endfor %}
 
+{% macro format_sections(sections, parentHierachy) %}
 {# Section containing all the req starting at heading 1 #}
-{% for skey, sval in req_sections.items() recursive -%}
-{% set headmark = '#'*loop.depth %}
-{{ headmark }} {{ skey }}. {{sval.name}}
+{% for skey, sval in sections.items() %}
+{% set headmark = '#'*(parentHierachy|length + 1) %}
+{% set hierarchyText = (parentHierachy +[skey])|join('.') %}
+{{ headmark }} {{ hierarchyText }}. {{sval.name}}
 
 {{ sval.description }}
 
-{% for rkey, rval in sval.reqs.items() -%}
+{% for rkey, rval in sval.reqs.items() %}
 {{ headmark }}# [{{ rkey }}]({{r4jorigin}}&issueKey={{rkey}}) {{ rval.summary }}
 
 {{rval.description|indent('> ',True, True)}}
 
-{% endfor -%}
-{{ loop(sval.sections.items()) }}
-{% endfor -%}
+{% endfor %} 
+{{- format_sections(sval.sections, parentHierachy + [skey]) -}}
+{% endfor %}
+{% endmacro %}
+
+{{ format_sections(req_sections, []) }}

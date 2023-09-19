@@ -33,8 +33,10 @@ def main():
     
     # 2. Load jinja template
     env = Environment(loader =FileSystemLoader('.'))
-    template = env.get_template(config['format']['text_model'])
     env.trim_blocks = True
+    env.lstrip_blocks = True
+    template = env.get_template(config['format']['text_model'])
+ 
 
     # 3. Load yaml regs
     try:
