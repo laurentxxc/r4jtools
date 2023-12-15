@@ -109,18 +109,22 @@ def exportR4JRequirements(r4jfolders, search: JiraSearch):
         # TODO: Apply filtering (product) 
         def getReqTable(issues):
             result = {}
+            i=1
             for elem in issues:
-                reqJson = search.get_requirement(elem['data']['key'])
+
+                reqID = elem['data']['key']
+                reqJson = search.get_requirement(reqID)
                 fields = reqJson['fields']
+                fields['reqID'] = reqID
 
                 # update req description with better Markdown output
                 md_description = convertJira2Markdown(fields['description'])
                 
                 fields['description'] =  md_description.strip()
         
-                result[elem['data']['key']] = fields
-                
-                
+                result[i] = fields
+                i+=1
+                                
             return result
 
         req_section = {}

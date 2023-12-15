@@ -19,7 +19,7 @@ Requirements extracted from R4J database [{{val.r4jexport.projkey}}]({{r4jorigin
 
 {% for skey, sval in req_sections.items() recursive %}
 {% for rkey, rval in sval.reqs.items() %}
-* [{{ rkey }}] {{ rval.summary }}
+* [{{ rval.reqID }}] {{ rval.summary }}
 {% endfor %}
 {{- loop(sval.sections.items()) -}}
 {% endfor %}
@@ -34,7 +34,7 @@ Requirements extracted from R4J database [{{val.r4jexport.projkey}}]({{r4jorigin
 {{ sval.description }}
 
 {% for rkey, rval in sval.reqs.items() %}
-{{ headmark }}# [{{ rkey }}]({{r4jorigin}}&issueKey={{rkey}}) {{ rval.summary }}
+{{ headmark }}# [{{ rval.reqID }}]({{r4jorigin}}&issueKey={{rval.reqID}}) {{ rval.summary }}
 
 {{rval.description|indent('> ',True, True)}}
 
