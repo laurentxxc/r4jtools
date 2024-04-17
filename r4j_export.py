@@ -8,6 +8,10 @@ import sys
 import pandoc
 from datetime import date
 
+# Dev support:
+# R4J REST API can be found at https://easesolutions.atlassian.net/wiki/spaces/REQ4J/pages/1490616345/REST+API+2.0
+#
+
 R4J_PATH = '/rest/com.easesolutions.jira.plugins.requirements/2.0'
 # INSERTION_POINT_STYLE = 'Insertion Point'
 # REQUIREMENTS_TAG = '<Requirements>'
