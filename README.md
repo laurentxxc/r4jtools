@@ -21,7 +21,7 @@ A global workflow configuration has to be setup to configure inputs/outputs of e
   * StructureText/Markdwon output file name and location
   * Final Word documentation location 
 
-A configuration file sample is provided in [config.yaml](input_samples/config.yaml).
+A configuration file sample is provided in [company-config.yaml](input_samples/company-config.yaml).
 
 # Usage
 ## Installation pre-requisites
@@ -34,7 +34,7 @@ pip install -r requirements.txt
 [Pandoc](https://pandoc.org/installing.html) tools need also to be properly installed.
 
 ## Project setup
-For each project where a requirement document type has to be generated, a dedicated configuration file as to be created. A copy of [config.yaml](input_samples/config.yaml) can be used and updated accordingly.
+For each project where a requirement document type has to be generated, a dedicated configuration file as to be created. A copy of [company-config.yaml](input_samples/company-config.yaml) can be used and updated accordingly.
 In case multiple configurations are needed (e.g. multiple requirement database for same project, multiple format,...), each configuration file should be named approrprielty.
 
 ## R4J Export

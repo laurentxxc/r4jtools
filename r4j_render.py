@@ -33,7 +33,7 @@ def main():
     pdoc = pandoc.read(file=config['format']['text_out'])
     
     # 3. Render in final doc
-    # --toc --reference-doc commscope-reference.docx
+    # --toc --reference-doc reference.docx
     pandoc.write(doc=pdoc, file=config['render']['doc_out'], options=['--toc','--reference-doc', config['render']['doc_style']])
     
 if __name__ == '__main__':

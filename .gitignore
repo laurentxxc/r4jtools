@@ -1,1 +1,11 @@
 .vscode/settings.json
+
+# Company-specific files (kept locally but not in repo)
+input_samples/config.yaml
+input_samples/commscope-reference.docx
+input_samples/vantiva-reference.docx
+
+# macOS artifacts
+.DS_Store
+._.DS_Store
+input_samples/._*

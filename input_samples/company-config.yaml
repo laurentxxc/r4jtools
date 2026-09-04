@@ -1,0 +1,35 @@
+#
+# Copy this file in your project and update values accordingly
+#
+#
+# Main config param for R4JTools export operation
+export:
+  # R4J server name
+  server: jira-server.company.com
+  # R4J requirement project
+  projkey: TRPROJSAMPLE
+  # Additional jql filter
+  jqlfilter: filter
+  # Path location where R4J req informations will be stored in yaml format
+  yaml_out: out/reqs.yaml
+
+# Main config param for R4JTools text format operation
+format:
+  # Jinja based model for formatting requirements in text form will be stored
+  text_model: r4jtools/input_samples/TR.md.jinja
+  # Path location where requirement text documentation 
+  text_out: out/TRPROJ_SAMPLE.md
+  # Documentation attributes that will be added as yaml header
+  header:
+    title: Technical PROJ SAMPLE Requirements
+    subtitle: TR
+    author: me@company.com
+    abstract: This document provides desciption of all applicable PROJ SAMPLE technical requirements
+    category: Technical Requirements
+
+# Main config param for R4JTools final document rendering operation
+render:
+  # Word reference documentation (style, header) used by pandoc for Word output rendering
+  doc_style: r4jtools/input_samples/company-reference.docx
+  # Path  location of final generated documentation
+  doc_out: out/TRPROJ_SAMPLE.docx
